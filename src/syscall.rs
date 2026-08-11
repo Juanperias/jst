@@ -26,6 +26,10 @@ pub enum Syscall {
         brk: MemBuf,
         ret: u64,
     },
+    SysClose {
+        fd: i32,
+        ret: i32,
+    },
     SysExit(u64),
 }
 
@@ -69,6 +73,12 @@ impl Syscall {
                     ret: regs.rax,
                 })
             },
+            3 => {
+                Ok(Self::SysClose {
+                    fd: regs.rdi as i32,
+                    ret: regs.rax as i32,
+                })
+            },
             12 => {
                 let addr = MemBuf::from_addr(regs.rdi);
 
@@ -95,6 +105,9 @@ impl Display for Syscall {
             },
             Self::SysOpen { filename, flags, mode, ret } => {
                 write!(f, "open({filename}, {flags}, {mode}) = {ret}")
+            },
+            Self::SysClose { fd, ret } => {
+                write!(f, "close({fd}) = {ret}")
             },
             Self::SysBrk { brk, ret } => {
                 write!(f, "brk({:x}) = 0x{:x}", brk, ret)

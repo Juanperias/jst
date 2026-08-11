@@ -16,6 +16,10 @@ _start:
    mov rdx, 0
    syscall
 
+   mov rdi, rax
+   mov rax, 3
+   syscall
+
  ;   mov rax, 0
 ;    push rax
 
